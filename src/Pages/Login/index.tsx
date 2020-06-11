@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Icon, Input, Button } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form'
-import './login.css'
+import './style.css'
 
 interface FormFields {
     password: string

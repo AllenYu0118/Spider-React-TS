@@ -2,6 +2,7 @@
   "name": "frontend-project",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:7001",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -11,6 +12,7 @@
     "@types/react": "^16.9.36",
     "@types/react-dom": "^16.9.8",
     "antd": "^3.26.16",
+    "axios": "^0.19.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
