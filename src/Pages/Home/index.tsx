@@ -90,7 +90,7 @@ class Home extends Component {
         } = {}
         for (let i in data) {
             const item = data[i]
-            times.push(moment(~~i).format('MM-DD HH:mm'))
+            times.push(moment(Number(i)).format('MM-DD HH:mm'))
             item.forEach(innnerItem => {
                 const { title, count } = innnerItem
 
@@ -113,7 +113,6 @@ class Home extends Component {
                 data: tempData[i]
             })
         }
-        console.log('data: ', data);
 
         return {
             title: {
