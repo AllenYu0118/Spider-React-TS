@@ -11,15 +11,6 @@ interface CourseItem {
     count: number
 }
 
-interface DataStructure {
-    [key: string]: CourseItem[]
-}
-
-interface LineData {
-    name: string
-    type: string
-    data: number[]
-}
 interface State {
     loaded: boolean
     isLogin: boolean
@@ -37,7 +28,7 @@ class Home extends Component {
     componentDidMount() {
         request.get('/api/isLogin')
             .then(res => {
-                const data = res.data
+                const data: responseResult.isLogin = res.data
                 if (!data) {
                     this.setState({
                         isLogin: false,
@@ -50,9 +41,14 @@ class Home extends Component {
                 }
             })
 
+        this.handleShowDataClick()
+
+    }
+
+    handleShowDataClick = () => {
         request.get('/api/showData')
             .then(res => {
-                const data: DataStructure = res.data
+                const data: responseResult.showData = res.data
                 if (data) {
                     this.setState({
                         data
@@ -66,9 +62,11 @@ class Home extends Component {
     handleCrowllerClick = () => {
         request.get('/api/getData')
             .then(res => {
-                const data = res.data
+                const data: responseResult.getData = res.data
                 if (data) {
                     message.success('爬取成功')
+
+                    this.handleShowDataClick()
                 } else {
                     message.error('爬取成功')
                 }
@@ -78,7 +76,7 @@ class Home extends Component {
     handleLogoutClick = () => {
         request.get('/api/logout')
             .then(res => {
-                const data = res.data
+                const data: responseResult.loginout = res.data
                 if (data) {
                     this.setState({
                         isLogin: false
@@ -164,7 +162,7 @@ class Home extends Component {
                     <div className="home-page">
                         <div className="buttons">
                             <Button type="primary" onClick={this.handleCrowllerClick}>爬取</Button>
-                            <Button type="primary">展示</Button>
+                            <Button type="primary" onClick={this.handleShowDataClick}>展示</Button>
                             <Button type="primary" onClick={this.handleLogoutClick}>退出</Button>
                         </div>
 

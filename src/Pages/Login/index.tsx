@@ -28,7 +28,7 @@ class LoginForm extends Component<Props> {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).then(res => {
-                    const data = res.data
+                    const data: responseResult.login = res.data
                     if (data) {
                         this.setState({
                             isLogin: true
