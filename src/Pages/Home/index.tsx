@@ -2,13 +2,17 @@ import React, { Component } from 'react'
 import { Button, message } from 'antd'
 import moment from 'moment'
 import ReactEcharts from 'echarts-for-react'
-import axios from 'axios'
+import request from '../../request'
 import './style.css'
 import { Redirect } from 'react-router-dom'
 
 interface CourseItem {
     title: string,
     count: number
+}
+
+interface DataStructure {
+    [key: string]: CourseItem[]
 }
 
 interface LineData {
@@ -31,9 +35,10 @@ class Home extends Component {
         data: {}
     }
     componentDidMount() {
-        axios.get('/api/isLogin')
+        request.get('/api/isLogin')
             .then(res => {
-                if (!res.data?.data) {
+                const data = res.data
+                if (!data) {
                     this.setState({
                         isLogin: false,
                         loaded: true
@@ -45,11 +50,12 @@ class Home extends Component {
                 }
             })
 
-        axios.get('/api/showData')
+        request.get('/api/showData')
             .then(res => {
-                if (res.data?.data) {
+                const data: DataStructure = res.data
+                if (data) {
                     this.setState({
-                        data: res.data.data
+                        data
                     })
                 } else {
                     message.error('数据获取失败！')
@@ -58,9 +64,10 @@ class Home extends Component {
     }
 
     handleCrowllerClick = () => {
-        axios.get('/api/getData')
+        request.get('/api/getData')
             .then(res => {
-                if (res.data?.data) {
+                const data = res.data
+                if (data) {
                     message.success('爬取成功')
                 } else {
                     message.error('爬取成功')
@@ -69,9 +76,10 @@ class Home extends Component {
     }
 
     handleLogoutClick = () => {
-        axios.get('/api/logout')
+        request.get('/api/logout')
             .then(res => {
-                if (res.data?.data) {
+                const data = res.data
+                if (data) {
                     this.setState({
                         isLogin: false
                     })
@@ -104,7 +112,7 @@ class Home extends Component {
             })
         }
 
-        const result: LineData[] = []
+        const result: echarts.EChartOption.Series[] = []
 
         for (let i in tempData) {
             result.push({
