@@ -1,41 +1,52 @@
 import React, { Component } from 'react'
-import { Redirect, Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import request from '../../request'
 import qs from 'qs'
-import { Form, Icon, Input, Button, message } from 'antd';
+import { 
+    Form,
+    Input,
+    Icon,
+    Button,
+    message,
+} from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form'
 import './style.css'
 
 interface FormFields {
+    username: string
     password: string
+    email: string
 }
 interface Props {
     form: WrappedFormUtils<FormFields>
 }
 
-class LoginForm extends Component<Props> {
+class RegisterForm extends Component<Props> {
     state = {
-        isLogin: false
+        loaded: false,
+        isLogin: false,
     }
-    handleSubmit = (e: React.FormEvent) => {
+    handleRegister = (e: React.FormEvent) => {
         e.preventDefault();
         this.props.form.validateFields((err: any, values) => {
             if (!err) {
-                request.post('/api/login', qs.stringify({
-                    password: values.password
+                request.post('/api/register', qs.stringify({
+                    username: values.username,
+                    password: values.password,
+                    email: values.email
                 }), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).then(res => {
-                    const data: responseResult.login = res.data
-                    if (data) {
-                        this.setState({
-                            isLogin: true
-                        })
-                    } else {
-                        message.error('登录失败')
-                    }
+                    // const data: responseResult.login = res.data
+                    // if (data) {
+                    //     this.setState({
+                    //         isLogin: true
+                    //     })
+                    // } else {
+                    //     message.error('登录失败')
+                    // }
                 })
             }
         });
@@ -46,8 +57,8 @@ class LoginForm extends Component<Props> {
         const { getFieldDecorator } = this.props.form;
         return (
             isLogin ? <Redirect to="/" /> :
-                <div className="login-page">
-                    <Form onSubmit={this.handleSubmit} className="login-form">
+                <div className="register-page">
+                    <Form onSubmit={this.handleRegister} className="login-form">
                         <Form.Item>
                             {getFieldDecorator('username', {
                                 rules: [{ required: true, message: '请输入用户名称' }],
@@ -71,8 +82,27 @@ class LoginForm extends Component<Props> {
                             )}
                         </Form.Item>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit"> 登 陆 </Button>
-                            <Link to="/register"><Button type="link">注册</Button></Link>
+                            {getFieldDecorator('email', {
+                                rules: [
+                                {
+                                    type: 'email',
+                                    message: '请输入正确的E-mail!',
+                                },
+                                {
+                                    required: true,
+                                    message: '请输入您的E-mail',
+                                },
+                                ],
+                            })(
+                                <Input
+                                    prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                    type="email"
+                                    placeholder="Email"
+                                />
+                            )}
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" className="register-btn"> 注 册 </Button>
                         </Form.Item>
                     </Form>
                 </div>
@@ -80,6 +110,6 @@ class LoginForm extends Component<Props> {
     }
 }
 
-const WrappedLoginForm = Form.create({ name: 'login' })(LoginForm);
+const WrappedRegisterForm = Form.create({ name: 'register' })(RegisterForm);
 
-export default WrappedLoginForm
+export default WrappedRegisterForm
