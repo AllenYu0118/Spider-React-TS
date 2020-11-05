@@ -24,7 +24,7 @@ interface Props {
 class RegisterForm extends Component<Props> {
     state = {
         loaded: false,
-        isLogin: false,
+        isRegister: false,
     }
     handleRegister = (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,24 +39,26 @@ class RegisterForm extends Component<Props> {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).then(res => {
-                    // const data: responseResult.login = res.data
-                    // if (data) {
-                    //     this.setState({
-                    //         isLogin: true
-                    //     })
-                    // } else {
-                    //     message.error('登录失败')
-                    // }
+                    const data: responseResult.register = res.data
+                    if (data) {
+                        message.success('注册成功, 请登录账号!', 3, () => {
+                            this.setState({
+                                isRegister: true
+                            })
+                        })
+                    } else {
+                        message.error('注册失败,用户名已存在!')
+                    }
                 })
             }
         });
     };
 
     render() {
-        const { isLogin } = this.state
+        const { isRegister } = this.state
         const { getFieldDecorator } = this.props.form;
         return (
-            isLogin ? <Redirect to="/" /> :
+            isRegister ? <Redirect to="/login" /> :
                 <div className="register-page">
                     <Form onSubmit={this.handleRegister} className="login-form">
                         <Form.Item>

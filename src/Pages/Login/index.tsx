@@ -7,6 +7,7 @@ import { WrappedFormUtils } from 'antd/lib/form/Form'
 import './style.css'
 
 interface FormFields {
+    username: string
     password: string
 }
 interface Props {
@@ -22,6 +23,7 @@ class LoginForm extends Component<Props> {
         this.props.form.validateFields((err: any, values) => {
             if (!err) {
                 request.post('/api/login', qs.stringify({
+                    username: values.username,
                     password: values.password
                 }), {
                     headers: {
@@ -33,6 +35,7 @@ class LoginForm extends Component<Props> {
                         this.setState({
                             isLogin: true
                         })
+                        localStorage.setItem('TOKEN', data.toString())
                     } else {
                         message.error('登录失败')
                     }
