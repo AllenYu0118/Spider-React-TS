@@ -73,6 +73,18 @@ class Home extends Component {
             })
     }
 
+    handleGithubCrowllerClick = () => {
+        request.get('/api/getGithubData')
+            .then(res => {
+                const data: responseResult.getData = res.data
+                if (data) {
+                    message.success('爬取成功')
+                } else {
+                    message.error('爬取成功')
+                }
+            })
+    }
+
     handleLogoutClick = () => {
         request.get('/api/logout')
             .then(res => {
@@ -162,6 +174,7 @@ class Home extends Component {
                     <div className="home-page">
                         <div className="buttons">
                             <Button type="primary" onClick={this.handleCrowllerClick}>爬取</Button>
+                            <Button type="primary" onClick={this.handleGithubCrowllerClick}>爬取Github</Button>
                             <Button type="primary" onClick={this.handleShowDataClick}>展示</Button>
                             <Button type="primary" onClick={this.handleLogoutClick}>退出</Button>
                         </div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import request from '../../request'
 import qs from 'qs'
 import { 
@@ -105,6 +105,10 @@ class RegisterForm extends Component<Props> {
                         </Form.Item>
                         <Form.Item>
                             <Button type="primary" htmlType="submit" className="register-btn"> 注 册 </Button>
+                        </Form.Item>
+                        
+                        <Form.Item>
+                            已有账号?<Link to="/login">去登录</Link>
                         </Form.Item>
                     </Form>
                 </div>
