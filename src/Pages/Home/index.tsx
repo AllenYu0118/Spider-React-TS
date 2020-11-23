@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { Button, message } from 'antd'
-import moment from 'moment'
+import { Button, message, Table, Tabs} from 'antd'
+import dayjs from 'dayjs'
 import ReactEcharts from 'echarts-for-react'
 import request from '../../request'
 import './style.css'
 import { Redirect } from 'react-router-dom'
 
+const { TabPane } = Tabs;
 interface CourseItem {
     title: string,
     count: number
@@ -19,6 +20,54 @@ interface State {
     }
 }
 
+enum TableKeys {
+    Vue,
+    React,
+    Vue2,
+    Webpack,
+    Lesson
+}
+
+interface TableItem {
+    date: string
+    vue: number
+    react: number
+    webpack: number
+    lesson: number
+}
+
+const columns = [
+  {
+    title: '日期',
+    dataIndex: 'date',
+    key: 'date',
+  },
+  {
+    title: 'Vue 访问量',
+    dataIndex: 'Vue',
+    key: 'Vue',
+  },
+  {
+    title: 'React 访问量',
+    dataIndex: 'React',
+    key: 'React',
+  },
+  {
+    title: 'Vue2 访问量',
+    dataIndex: 'Vue2',
+    key: 'Vue2',
+  },
+  {
+    title: 'Webpack 访问量',
+    dataIndex: 'Webpack',
+    key: 'Webpack',
+  },
+  {
+    title: '课程访问量',
+    dataIndex: 'Lesson',
+    key: 'Lesson',
+  },
+];
 class Home extends Component {
     state: State = {
         loaded: false,
@@ -99,6 +148,26 @@ class Home extends Component {
             })
     }
 
+    getTableData = () => {
+        const { data } = this.state
+        const tableData: object[] = []
+        Object.keys(data).forEach(time => {
+            let date = dayjs(Number(time)).format('YYYY-MM-DD HH:mm:ss')
+            let itemData = data[time]
+            let tableItemData: {
+                [key: string]: number | string
+            } = {}
+            for (let index in itemData) {
+                let key = TableKeys[index]
+                tableItemData[key] = itemData[index].count
+            }
+            tableItemData.date = date
+            tableData.push(tableItemData)
+        })
+
+        return tableData
+    }
+
     getOptions: () => echarts.EChartOption = () => {
         const { data } = this.state
         const courseNames: string[] = []
@@ -108,7 +177,7 @@ class Home extends Component {
         } = {}
         for (let i in data) {
             const item = data[i]
-            times.push(moment(Number(i)).format('MM-DD HH:mm'))
+            times.push(dayjs(Number(i)).format('MM-DD HH:mm'))
             item.forEach(innnerItem => {
                 const { title, count } = innnerItem
 
@@ -139,19 +208,11 @@ class Home extends Component {
             tooltip: {
                 trigger: 'axis'
             },
-            legend: {
-                data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
-            },
             grid: {
                 left: '3%',
                 right: '4%',
                 bottom: '3%',
                 containLabel: true
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: {}
-                }
             },
             xAxis: {
                 type: 'category',
@@ -179,15 +240,20 @@ class Home extends Component {
                             <Button type="primary" onClick={this.handleLogoutClick}>退出</Button>
                         </div>
 
-
-                        <ReactEcharts option={this.getOptions()} />
+                        <Tabs defaultActiveKey="1">
+                            <TabPane tab="表格" key="1">
+                                <Table dataSource={this.getTableData()} columns={columns} />
+                            </TabPane>
+                            <TabPane tab="趋势图" key="2">
+                                <ReactEcharts option={this.getOptions()} />
+                            </TabPane>
+                        </Tabs>
                     </div>
                 )
             }
 
             return null
         }
-
         return <Redirect to="/login" />
     }
 
